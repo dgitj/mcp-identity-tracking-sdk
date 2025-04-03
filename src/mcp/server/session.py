@@ -91,6 +91,8 @@ class ServerSession(
         )
         self._initialization_state = InitializationState.NotInitialized
         self._init_options = init_options
+        self._client_id = None  # Add this to track client ID
+        self._client_request_count = {}  # Track request counts per client
         self._incoming_message_stream_writer, self._incoming_message_stream_reader = (
             anyio.create_memory_object_stream[ServerRequestResponder](0)
         )
@@ -136,6 +138,19 @@ class ServerSession(
                     return False
 
         return True
+    
+    # In ServerSession class
+    @property
+    def client_id(self) -> str | None:
+        """Get the client ID if available."""
+        return self._client_id
+
+    @property
+    def client_request_count(self) -> int:
+        """Get the number of requests made by the current client."""
+        if self._client_id and self._client_id in self._client_request_count:
+            return self._client_request_count[self._client_id]
+        return 0
 
     async def _received_request(
         self, responder: RequestResponder[types.ClientRequest, types.ServerResult]
@@ -144,6 +159,14 @@ class ServerSession(
             case types.InitializeRequest(params=params):
                 self._initialization_state = InitializationState.Initializing
                 self._client_params = params
+
+                # Extract client ID from client info
+                self._client_id = params.clientInfo.name
+                
+                # Initialize request counter for this client
+                if self._client_id not in self._client_request_count:
+                    self._client_request_count[self._client_id] = 0
+
                 with responder:
                     await responder.respond(
                         types.ServerResult(
@@ -163,6 +186,10 @@ class ServerSession(
                     raise RuntimeError(
                         "Received request before initialization was complete"
                     )
+            
+                    # Track request count for the client
+                if self._client_id and self._client_id in self._client_request_count:
+                    self._client_request_count[self._client_id] += 1
 
     async def _received_notification(
         self, notification: types.ClientNotification

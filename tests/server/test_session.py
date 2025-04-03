@@ -1,5 +1,7 @@
 import anyio
 import pytest
+from mcp.shared.memory import create_connected_server_and_client_session
+from mcp.types import TextContent
 
 import mcp.types as types
 from mcp.client.session import ClientSession
@@ -106,3 +108,27 @@ async def test_server_capabilities():
     caps = server.get_capabilities(notification_options, experimental_capabilities)
     assert caps.prompts == PromptsCapability(listChanged=False)
     assert caps.resources == ResourcesCapability(subscribe=False, listChanged=False)
+
+
+@pytest.mark.anyio
+async def test_client_identity_tracking():
+    """Test that client identity is properly tracked."""
+    server = Server("identity_test")
+    
+    # Define a simple tool that uses client identity
+    @server.call_tool()
+    async def identity_tool(name: str, arguments: dict | None) -> list:
+        ctx = server.request_context
+        client_id = ctx.client_id
+        request_count = ctx.client_request_count
+        return [TextContent(type="text", 
+                           text=f"Hello {client_id}, this is request #{request_count}")]
+    
+    async with create_connected_server_and_client_session(server) as session:
+        # First request
+        result1 = await session.call_tool("identity_tool", {})
+        assert "Hello mcp, this is request #1" in result1.content[0].text
+        
+        # Second request
+        result2 = await session.call_tool("identity_tool", {})
+        assert "Hello mcp, this is request #2" in result2.content[0].text
