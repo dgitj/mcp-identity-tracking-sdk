@@ -91,7 +91,7 @@ class ServerSession(
         )
         self._initialization_state = InitializationState.NotInitialized
         self._init_options = init_options
-        self._client_id = None  # Add this to track client ID
+        self._client_id = None  # Added client ID
         self._client_request_count = {}  # Track request counts per client
         self._incoming_message_stream_writer, self._incoming_message_stream_reader = (
             anyio.create_memory_object_stream[ServerRequestResponder](0)
@@ -139,7 +139,6 @@ class ServerSession(
 
         return True
     
-    # In ServerSession class
     @property
     def client_id(self) -> str | None:
         """Get the client ID if available."""
