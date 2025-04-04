@@ -36,15 +36,17 @@ Common usage pattern:
 The ServerSession class is typically used internally by the Server class and should not
 be instantiated directly by users of the MCP framework.
 """
-
+# Standard library imports
 from enum import Enum
 from typing import Any, TypeVar
 
+# Third-party library imports
 import anyio
 import anyio.lowlevel
 from anyio.streams.memory import MemoryObjectReceiveStream, MemoryObjectSendStream
 from pydantic import AnyUrl
 
+# First-party/local imports
 import mcp.types as types
 from mcp.server.models import InitializationOptions
 from mcp.shared.session import (
