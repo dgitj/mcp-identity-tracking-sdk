@@ -91,8 +91,8 @@ class ServerSession(
         )
         self._initialization_state = InitializationState.NotInitialized
         self._init_options = init_options
-        self._client_id = None  # Added client ID
-        self._client_request_count = {}  # Track request counts per client
+        self._client_id: Optional[str] = None  # Added client ID
+        self._client_request_count: Dict[str, int] = {}
         self._incoming_message_stream_writer, self._incoming_message_stream_reader = (
             anyio.create_memory_object_stream[ServerRequestResponder](0)
         )

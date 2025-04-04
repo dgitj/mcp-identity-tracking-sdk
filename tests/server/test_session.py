@@ -1,7 +1,5 @@
 import anyio
 import pytest
-from mcp.shared.memory import create_connected_server_and_client_session
-from mcp.types import TextContent
 
 import mcp.types as types
 from mcp.client.session import ClientSession
@@ -9,6 +7,7 @@ from mcp.server import Server
 from mcp.server.lowlevel import NotificationOptions
 from mcp.server.models import InitializationOptions
 from mcp.server.session import ServerSession
+from mcp.shared.memory import create_connected_server_and_client_session
 from mcp.shared.session import RequestResponder
 from mcp.types import (
     ClientNotification,
@@ -17,6 +16,7 @@ from mcp.types import (
     PromptsCapability,
     ResourcesCapability,
     ServerCapabilities,
+    TextContent
 )
 
 
