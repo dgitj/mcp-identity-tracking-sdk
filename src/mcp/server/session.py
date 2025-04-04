@@ -38,7 +38,7 @@ be instantiated directly by users of the MCP framework.
 """
 
 from enum import Enum
-from typing import Any, Dict, Optional, TypeVar
+from typing import Any, Optional, TypeVar
 
 import anyio
 import anyio.lowlevel
@@ -92,8 +92,8 @@ class ServerSession(
         )
         self._initialization_state = InitializationState.NotInitialized
         self._init_options = init_options
-        self._client_id: Optional[str] = None  # Added client ID
-        self._client_request_count: Dict[str, int] = {}
+        self._client_id: str | None = None  # Added client ID
+        self._client_request_count: dict[str, int] = {}
         self._incoming_message_stream_writer, self._incoming_message_stream_reader = (
             anyio.create_memory_object_stream[ServerRequestResponder](0)
         )
@@ -141,7 +141,7 @@ class ServerSession(
         return True
 
     @property
-    def client_id(self) -> Optional[str]:  
+    def client_id(self) -> str | None:
         """Get the client ID if available."""
         return self._client_id
 
