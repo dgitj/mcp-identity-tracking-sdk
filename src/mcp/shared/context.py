@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Generic, Optional
+from typing import Any, Generic
 
 from typing_extensions import TypeVar
 
@@ -18,7 +18,7 @@ class RequestContext(Generic[SessionT, LifespanContextT]):
     lifespan_context: LifespanContextT
 
     @property
-    def client_id(self) -> Optional[str]:
+    def client_id(self) -> str | None:
         """Get the client ID if available."""
         if hasattr(self.session, "client_id"):
             return self.session.client_id
