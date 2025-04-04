@@ -109,7 +109,6 @@ async def test_server_capabilities():
     assert caps.prompts == PromptsCapability(listChanged=False)
     assert caps.resources == ResourcesCapability(subscribe=False, listChanged=False)
 
-
 @pytest.mark.anyio
 async def test_client_identity_tracking():
     """Test that client identity is properly tracked."""

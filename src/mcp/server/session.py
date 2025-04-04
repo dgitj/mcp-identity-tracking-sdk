@@ -38,14 +38,13 @@ be instantiated directly by users of the MCP framework.
 """
 
 from enum import Enum
-from typing import Any, TypeVar
+from typing import Any, Dict, Optional, TypeVar
 
 import anyio
 import anyio.lowlevel
 from anyio.streams.memory import MemoryObjectReceiveStream, MemoryObjectSendStream
 from pydantic import AnyUrl
 
-from typing import Dict, Optional
 
 import mcp.types as types
 from mcp.server.models import InitializationOptions
@@ -142,7 +141,7 @@ class ServerSession(
         return True
 
     @property
-    def client_id(self) -> str | None:
+    def client_id(self) -> Optional[str]:  
         """Get the client ID if available."""
         return self._client_id
 
