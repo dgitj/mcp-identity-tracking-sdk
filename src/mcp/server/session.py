@@ -45,6 +45,8 @@ import anyio.lowlevel
 from anyio.streams.memory import MemoryObjectReceiveStream, MemoryObjectSendStream
 from pydantic import AnyUrl
 
+from typing import Dict, Optional
+
 import mcp.types as types
 from mcp.server.models import InitializationOptions
 from mcp.shared.session import (
@@ -138,7 +140,7 @@ class ServerSession(
                     return False
 
         return True
-    
+
     @property
     def client_id(self) -> str | None:
         """Get the client ID if available."""
@@ -161,7 +163,7 @@ class ServerSession(
 
                 # Extract client ID from client info
                 self._client_id = params.clientInfo.name
-                
+
                 # Initialize request counter for this client
                 if self._client_id not in self._client_request_count:
                     self._client_request_count[self._client_id] = 0
@@ -185,7 +187,7 @@ class ServerSession(
                     raise RuntimeError(
                         "Received request before initialization was complete"
                     )
-            
+
                     # Track request count for the client
                 if self._client_id and self._client_id in self._client_request_count:
                     self._client_request_count[self._client_id] += 1

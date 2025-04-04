@@ -16,7 +16,7 @@ from mcp.types import (
     PromptsCapability,
     ResourcesCapability,
     ServerCapabilities,
-    TextContent
+    TextContent,
 )
 
 
@@ -114,21 +114,24 @@ async def test_server_capabilities():
 async def test_client_identity_tracking():
     """Test that client identity is properly tracked."""
     server = Server("identity_test")
-    
+
     # Define a simple tool that uses client identity
     @server.call_tool()
     async def identity_tool(name: str, arguments: dict | None) -> list:
         ctx = server.request_context
         client_id = ctx.client_id
         request_count = ctx.client_request_count
-        return [TextContent(type="text", 
-                           text=f"Hello {client_id}, this is request #{request_count}")]
-    
+        return [
+            TextContent(
+                type="text", text=f"Hello {client_id}, this is request #{request_count}"
+            )
+        ]
+
     async with create_connected_server_and_client_session(server) as session:
         # First request
         result1 = await session.call_tool("identity_tool", {})
         assert "Hello mcp, this is request #1" in result1.content[0].text
-        
+
         # Second request
         result2 = await session.call_tool("identity_tool", {})
         assert "Hello mcp, this is request #2" in result2.content[0].text

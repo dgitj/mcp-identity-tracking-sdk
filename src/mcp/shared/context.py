@@ -23,7 +23,7 @@ class RequestContext(Generic[SessionT, LifespanContextT]):
         if hasattr(self.session, "client_id"):
             return self.session.client_id
         return None
-        
+
     @property
     def client_request_count(self) -> int:
         """Get the number of requests from this client."""
